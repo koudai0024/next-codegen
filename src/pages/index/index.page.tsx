@@ -1,6 +1,8 @@
-import type { CustomNextPage } from "next";
+import type { CustomNextPage, GetServerSideProps } from "next";
 import { useEffect } from "react";
-import { useShipsQuery } from "src/apollo/graphql";
+import { addApolloState, initializeApollo } from "src/apollo/apolloClient";
+import type { ShipsQuery } from "src/apollo/graphql";
+import { ShipsDocument, useShipsQuery } from "src/apollo/graphql";
 import { CommonLayout } from "src/layout/CommonLayout";
 
 const Home: CustomNextPage = () => {
@@ -15,6 +17,16 @@ const Home: CustomNextPage = () => {
       <h1>Hello World!!!!</h1>
     </div>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const apolloClient = initializeApollo();
+  const { data } = await apolloClient.query<ShipsQuery>({
+    query: ShipsDocument,
+    variables: { limit: 10 },
+  });
+  console.log(data);
+  return addApolloState(apolloClient, { props: {} });
 };
 
 Home.getLayout = CommonLayout;
