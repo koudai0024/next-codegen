@@ -1,4 +1,11 @@
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import type { CustomAppProps } from "next/app";
+
+const cache = new InMemoryCache();
+const client = new ApolloClient({
+  uri: `${process.env.NEXT_PUBLIC_BACKEND_URL}`,
+  cache,
+});
 
 const App = (props: CustomAppProps) => {
   const getLayout =
@@ -6,7 +13,13 @@ const App = (props: CustomAppProps) => {
     ((page) => {
       return page;
     });
-  return <>{getLayout(<props.Component {...props.pageProps} />)}</>;
+  return (
+    <>
+      <ApolloProvider client={client}>
+        {getLayout(<props.Component {...props.pageProps} />)}
+      </ApolloProvider>
+    </>
+  );
 };
 
 export default App;
