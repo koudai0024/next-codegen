@@ -1,0 +1,7 @@
+query Ships($limit: Int!) {
+    ships(limit: $limit) {
+    id
+    image
+    name
+  }
+}
